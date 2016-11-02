@@ -1,9 +1,10 @@
-from ex2.compute_functions_ex2 import *
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 from scipy import optimize
-from functools import partial
+
+from ex2.compute_functions_ex2 import *
+from ex2.compute_functions_ex2 import plot_data
+
 
 def main():
     ex2_data1 = pd.read_csv("data/ex2data1.txt", header=None)
@@ -53,31 +54,6 @@ def main():
 
     pass
 
-def plot_data(X, y, theta=None):
-    plt.interactive(False)
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    if theta is not None:
-        dec_x_lim = np.array([np.min(X[:, 1]) - 2,  np.max(X[:, 1]) + 2])
 
-        dec_y_lim = (-1 / theta[2]) * (theta[1] * dec_x_lim + theta[0])
-
-        ax.plot(dec_x_lim, dec_y_lim, "b-", visible=True, lw=2)
-
-    ax.scatter(X[(y==0).nonzero()[0], 0],
-               X[(y==0).nonzero()[0], 1],
-               marker="o", c="yellow", s=50, label="not admitted", zorder=2)
-    ax.scatter(X[(y == 1).nonzero()[0], 0],
-               X[(y==1).nonzero()[0], 1],
-               marker="+", c="black",  s=50, label="admitted", zorder=2)
-
-
-    ax.set_title("Figure 1: Scatter plot of training data",)
-    ax.set_xlabel("exam1 score")
-    ax.set_ylabel("exam2 score")
-    ax.legend()
-
-    plt.show()
-    plt.savefig("test.png")
 if __name__ == "__main__":
     main()

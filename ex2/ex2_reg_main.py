@@ -6,10 +6,11 @@ from scipy import optimize
 from functools import partial
 
 def main():
-    ex2_data1 = pd.read_csv("data/ex2data1.txt", header=None)
+    #TODO change data1 -> data2
+    ex2_data2 = pd.read_csv("data/ex2data2.txt", header=None)
 
-    X = np.array(ex2_data1.iloc[:, 0:2])
-    y = np.array(ex2_data1.iloc[:, 2]).T
+    X = np.array(ex2_data2.iloc[:, 0:2])
+    y = np.array(ex2_data2.iloc[:, 2]).T
     y = y.reshape((len(y), 1))
 
     m, n = X.shape
@@ -19,17 +20,23 @@ def main():
     fprintf(['Plotting data with + indicating (y = 1) examples and o '...
              'indicating (y = 0) examples.\n']);
     '''
-    plot_data(X, y);
+    #plot_data(X, y)
     #check non reguralized cost function
-    X = np.c_[np.ones((m, 1)), X]
-    initial_theta = np.zeros((n + 1, 1))
 
-    anticipated_j = 0.693
-    j, _ = cost_function(X, y, initial_theta)
-    np.testing.assert_almost_equal(j, anticipated_j, decimal=3)
+    mapped_X = map_feature(X, 6)
+    mapped_X = np.c_[np.ones((m, 1)), mapped_X]
+
+    initial_theta = np.zeros((mapped_X.shape[1], 1))
+
+    expected_j = 0.693
+    lambda_ = 500
+    j, _ = cost_function_reg(mapped_X, y, initial_theta, lambda_)
+    np.testing.assert_almost_equal(j, expected_j, decimal=3)
+    #TODO theta with decent gradient and compare with optimizer's theta
 
     #optimizing using (fminunc)
-    target_func= lambda theta: cost_function(X=X, y=y, theta=theta)
+    target_func= lambda theta: cost_function_reg(X=mapped_X, y=y,
+                                                 theta=theta, lambda_=lambda_)
 
     res = optimize.minimize(target_func, initial_theta,
                                     method="Nelder-Mead",
@@ -39,7 +46,9 @@ def main():
     theta2 = res.x
     cost = res.fun
     print(theta2)
-    np.testing.assert_almost_equal(cost, 0.203, decimal=2)
+    #np.testing.assert_almost_equal(cost, 0.203, decimal=2)
+
+    plot_data(X, y, theta2)
 
     #Estimate
     testX_1 = np.array([[45, 85]])
@@ -50,13 +59,6 @@ def main():
 
     pass
 
-def plot_data(X, y, theta=None):
-    fig, ax = plt.subplot(1, 1)
-
-    ax.scatter(X[[y ==0], 0], X[[y==0], 1], "r+")
-    ax.scatter(X[[y == 1], 0], X[[y==1], 0], "yo")
-
-    plt.show()
 
 if __name__ == "__main__":
     main()

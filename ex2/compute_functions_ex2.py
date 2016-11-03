@@ -23,6 +23,11 @@ def cost_function(X, y, theta):
 
     return j, grad
 
+def predict(X, theta):
+    results = sigmoid_function(np.dot(X, theta))
+
+    return  (results >= 0.5).astype(int)
+
 def cost_function_reg(X, y, theta, lambda_):
     j, grad = cost_function(X, y, theta)
 

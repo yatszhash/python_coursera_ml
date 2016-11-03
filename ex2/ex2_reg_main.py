@@ -24,11 +24,10 @@ def main():
     #check non reguralized cost function
 
     mapped_X = map_feature(X, 6)
-    #mapped_X = np.c_[np.ones((m, 1)), mapped_X]
 
     initial_theta = np.zeros((mapped_X.shape[1], 1))
 
-    num_iters = 400
+    num_iters = 1000
     expected_j = 0.693
     lambda_ = 1
 
@@ -41,24 +40,36 @@ def main():
 
     plot_data(X, y, theta)
 
-    #TODO fix optimization (because inaprropriate of result)
     #optimizing using (fminunc)
     target_func= lambda theta: cost_function_reg(X=mapped_X, y=y,
                                                  theta=theta, lambda_=lambda_)
+    cost_func_for_opt = lambda theta : target_func(theta)[0][0, 0]
+    grad_func_for_opt = lambda theta : target_func(theta)[1]
 
-    res = optimize.minimize(target_func, initial_theta,
-                                    method="Nelder-Mead",
-                                    jac=True,
-                                    options={"maxiter": 400}
+    lambda_ = 0.1
+    #TODO I don't now why this code with jac is erroneous
+    res = optimize.minimize(cost_func_for_opt, initial_theta,
+                                    method="L-BFGS-B",
+                                    #jac=grad_func_for_opt,
+                                    #options={'disp': True}
                                     )
     theta2 = res.x
     cost = res.fun
-    print(theta2)
-    #np.testing.assert_almost_equal(cost, 0.203, decimal=2)
+    theta2 = theta2.reshape(len(theta2), 1)
 
     plot_data(X, y, theta2)
 
-    #TODO remove
+    predicted1 = predict(mapped_X, theta)
+    score1 = (predicted1 == y).astype(int)
+    print("gradient descent train accuracy : {}  %".format(
+        np.mean(score1) * 100
+    ))
+
+    predicted2 = predict(mapped_X, theta2)
+    score2 = (predicted2 == y).astype(int)
+    print("analytic optimization train accuracy : {} %".format(
+        np.mean(score2) * 100)
+    )
 
 
 if __name__ == "__main__":

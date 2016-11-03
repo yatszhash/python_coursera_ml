@@ -40,6 +40,27 @@ def cost_function_reg(X, y, theta, lambda_):
 
     return j_regularized, grad_regulatized
 
+def  update_theta(X, y, theta, alpha, grad):
+
+    correction= alpha * grad
+
+    np.testing.assert_allclose(correction.shape, theta.shape)
+    new_theta =  theta - correction
+
+    return new_theta
+
+
+def gradient_descent(X, y, theta, alpha, lambda_, num_iters):
+    J_history = np.zeros((num_iters, 1))
+    temp_theta = theta
+    grad = np.zeros((theta.shape[0], theta.shape[1]))
+
+    for iter in range(num_iters):
+        temp_theta = update_theta(X, y, temp_theta, alpha, grad)
+        J_history[iter, ], grad = cost_function_reg(X, y, temp_theta, lambda_)
+    return temp_theta, J_history
+
+
 #only for two fetures
 def map_feature(X, degree):
     assert X.shape[1], 2
@@ -54,7 +75,6 @@ def get_poly_terms(x, degree):
             poly_terms = np.append(poly_terms,
                                    ((x[0] ** (partial_degree - i)) * (x[1]  ** i)))
     return poly_terms
-
 
 def plot_data(X, y, theta=None):
     plt.interactive(False)
@@ -77,7 +97,7 @@ def plot_data(X, y, theta=None):
         for i, j in itertools.product(range(len(u)), range(len(v))):
             temp_x = map_feature(np.array([[u[i], v[j]]]), 6)
             #temp_x = np.c_[np.one, temp_x]
-            z[i, j] = np.dot(temp_x, theta[1:])
+            z[i, j] = np.dot(temp_x, theta )
 
         ax.contour(u, v, z, levels=[0], linewidths=2)
 

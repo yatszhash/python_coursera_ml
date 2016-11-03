@@ -52,8 +52,6 @@ def main():
     result_1 = sigmoid_function(np.dot(testX_1, theta2))
     np.testing.assert_almost_equal(result_1, anticipated_prob, decimal=3)
 
-    pass
-
 
 if __name__ == "__main__":
     main()

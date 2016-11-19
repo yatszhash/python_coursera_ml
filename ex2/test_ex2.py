@@ -90,5 +90,10 @@ class TestEx2(unittest.TestCase):
         np.testing.assert_array_equal(actual[0], expected_row)
         np.testing.assert_array_equal(actual[1], expected_row)
 
+    def test_map_feature2(self):
+        X = np.array([[2, 3]])
+        degree = 6
+        expected_row = np.array([[2, 3]])
+
 if __name__ == "__main__":
     unittest.main()

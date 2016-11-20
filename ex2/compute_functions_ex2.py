@@ -3,15 +3,17 @@ import numpy
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.optimize import minimize, fmin
 
 
 def sigmoid_function(z):
-    g = 1 / (1 + np.exp(-z))
+    g = 1.0 / (1.0 + np.exp(-z))
     return g
 
 def hypothesis_function(X, theta):
     linear_dot = np.dot(X, theta)
-    h = sigmoid_function(linear_dot)
+    vfunc = np.vectorize(sigmoid_function)
+    h = vfunc(linear_dot)
     return h.reshape(len(h), 1)
 
 def cost_function(X, y, theta):
@@ -19,7 +21,7 @@ def cost_function(X, y, theta):
     h = hypothesis_function(X, theta)
     j = (1 / m) * (-np.dot(y.T, np.log(h)) - np.dot((1 - y).T, np.log(1 - h)))
 
-    grad = (1 / m) * np.dot((h - y).T, X).T
+    grad = (1 / m) * np.dot(X.T, (h - y))
 
     return j, grad
 
@@ -65,6 +67,30 @@ def gradient_descent(X, y, theta, alpha, lambda_, num_iters):
         J_history[iter, ], grad = cost_function_reg(X, y, temp_theta, lambda_)
     return temp_theta, J_history
 
+
+def optimize_with_solver(X, y, initial_theta, lambda_):
+    # optimizing using (fminunc)
+    target_func = lambda theta: cost_function_reg(X=X, y=y,
+                                                  lambda_=lambda_,
+                                              theta=theta.reshape((len(theta), 1)))[0].flatten()
+
+    # #res = minimize(target_func, initial_theta,
+    #                         method="Nelder-Mead",
+    #                         jac=True,
+    #                         options={"maxiter": 10000}
+    #                         )
+    theta = initial_theta.flatten()
+    options = {'disp' : True, 'maxiter': 50}
+    #res = fmin(target_func, theta,
+    #           **options)
+    res = minimize(target_func, initial_theta,
+                            method="L-BFGS-B",
+                            options=options
+                            )
+
+    new_theta = res.x
+    print(res.fun)
+    return new_theta.reshape(len(new_theta), 1)
 
 #only for two fetures
 def map_feature(X, degree):

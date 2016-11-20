@@ -6,7 +6,6 @@ from scipy import optimize
 from functools import partial
 
 def main():
-    #TODO change data1 -> data2
     ex2_data2 = pd.read_csv("data/ex2data2.txt", header=None)
 
     X = np.array(ex2_data2.iloc[:, 0:2])
@@ -15,12 +14,6 @@ def main():
 
     m, n = X.shape
 
-   #plotting
-    '''
-    fprintf(['Plotting data with + indicating (y = 1) examples and o '...
-             'indicating (y = 0) examples.\n']);
-    '''
-    #plot_data(X, y)
     #check non reguralized cost function
 
     mapped_X = map_feature(X, 6)
@@ -47,7 +40,6 @@ def main():
     grad_func_for_opt = lambda theta : target_func(theta)[1]
 
     lambda_ = 0.1
-    #TODO I don't now why this code with jac is erroneous
     res = optimize.minimize(cost_func_for_opt, initial_theta,
                                     method="L-BFGS-B",
                                     #jac=grad_func_for_opt,

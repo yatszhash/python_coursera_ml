@@ -27,13 +27,7 @@ def opt_one_vs_all(X, Y, initial_theta, num_labels):
         lambda_ = 0.1
         each_theta = optimize_with_solver(X, each_Y,
                                                             initial_theta, lambda_)
-        #each_theta = gradient_descent(X, each_Y, initial_theta,
-        #                              0.5, 0.1, num_iters=10000)[0]
-
         all_theta[k - 1, :] = each_theta.T
-
-    #vfunc = np.vectorize(each_gradient_descent)
-    #all_theta = np.apply_along_axis(each_gradient_descent, 0, labels)
 
     return all_theta
 
@@ -48,5 +42,20 @@ def predict_one_vs_all(X, all_theta):
 
     return predicted.reshape(len(predicted), 1)
 
-def predict(Theta1, Theta2):
-    pass
+def predict(Theta1, Theta2, X):
+    a1 = np.c_[np.ones((X.shape[0], 1)), X]
+
+    z2 = np.dot(a1, Theta1.T)
+
+    a2 = sigmoid_function(z2)
+
+    a2 = np.c_[np.ones((z2.shape[0], 1)), a2]
+
+    z3 = np.dot(a2, Theta2.T)
+
+    h = sigmoid_function(z3)
+    p = np.argmax(h, axis=1)
+    p = p.reshape(len(p), 1)
+
+    p += 1
+    return p

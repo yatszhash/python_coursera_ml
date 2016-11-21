@@ -67,5 +67,22 @@ class TestEx3(TestCase):
                                         ])
         np.testing.assert_array_almost_equal(actual, expected, decimal=3)
 
+    def test_predict(self):
+        Theta1 = np.sin(np.arange(0, 5.9, 0.5)).reshape(3, 4).T
+        Theta2 = np.sin(np.arange(0, 5.9, 0.3)).reshape(5, 4).T
+        X = np.sin(np.arange(1, 17)).reshape(2, 8).T
+        actual_p = ex3.predict(Theta1, Theta2, X)
+
+        expected_p = np.array([[4],
+                                            [1],
+                                            [1],
+                                            [4],
+                                            [4],
+                                            [4],
+                                            [4],
+                                            [2]])
+
+        np.testing.assert_array_equal(actual_p, expected_p)
+
 if __name__ == "__main__":
     unittest.main()

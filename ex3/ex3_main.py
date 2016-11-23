@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from ex3.compute_functions_ex3 import predict_one_vs_all, opt_one_vs_all
+from ex3.compute_functions_ex3 import predict_one_vs_all, opt_one_vs_all, display_data, display_sampling
 
 
 def main():
@@ -10,14 +10,8 @@ def main():
 
     m = y.shape[0]
 
-    #randomly select 100 data
-    SAMPLING_SIZE = 100
-    np.random.seed(10)
-    #random_indices = np.random.rand(0, m, SAMPLING_SIZE)
-    #selected_X  = X[random_indices, :]
-
-    #todo visualize data
-
+    #=====part 1: visualize data======
+    display_sampling(X)
     #=====part 2: vectorize logistic regression
 
     print("Training One-vs-All Logistic Regression...\n")

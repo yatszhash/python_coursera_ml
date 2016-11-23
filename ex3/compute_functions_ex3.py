@@ -3,16 +3,34 @@ import matplotlib.pyplot as plt
 
 from ex2.compute_functions_ex2 import sigmoid_function, cost_function_reg, gradient_descent, optimize_with_solver
 
+def display_sampling(X, sample_size=100):
+    # randomly select 100 data
+    np.random.seed(10)
+    random_indices = np.random.randint(0, X.shape[0], sample_size)
+    selected_X = X[random_indices, :]
 
-def display_data(X, example_width):
+    display_data(selected_X)
+
+def display_data(X):
     m, n = X.shape
-    example_hight = n / example_width
-    imgs = X.map(lambda x: x.reshpe(example_hight, example_width))
 
-    display_rows = np.floor(np.sqrt(m))
-    display_cols = np.ceil(m / display_rows)
-    fig = plt.subplot(m )
-    plt.gray()
+    n_col, n_row = 10, 10
+    plt.figure(figsize=(2. * n_col, 2.26 * n_row))
+    plt.title("plot images", size=16)
+    #fig = plt.subplot(m )
+    image_shape = (20, 20)
+
+    for i, comp in enumerate(X):
+        plt.subplot(n_row, n_col, i+1)
+        vmax = comp.max() - comp.min()
+        plt.imshow(comp.reshape(image_shape).T,
+                   cmap=plt.get_cmap('gray'), interpolation='nearest',
+                   vmin=-vmax, vmax=vmax)
+        plt.xticks(())
+        plt.yticks()
+    plt.subplots_adjust(0.01, 0.05, 0.99, 0.93, 0.04, 0.)
+    #plt.savefig("../../ex3_image")
+    plt.show()
 
 def opt_one_vs_all(X, Y, initial_theta, num_labels):
 

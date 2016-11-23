@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from ex3.compute_functions_ex3 import predict
+from ex3.compute_functions_ex3 import predict, display_sampling
 
 
 def main():
@@ -14,7 +14,8 @@ def main():
 
     m = y.shape[0]
 
-    #TODO Display Data
+    # =====part 1: visualize data======
+    display_sampling(X)
 
     resub_y = predict(theta1, theta2, X)
 

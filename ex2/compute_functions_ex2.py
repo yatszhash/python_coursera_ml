@@ -74,15 +74,7 @@ def optimize_with_solver(X, y, initial_theta, lambda_):
                                                   lambda_=lambda_,
                                               theta=theta.reshape((len(theta), 1)))[0].flatten()
 
-    # #res = minimize(target_func, initial_theta,
-    #                         method="Nelder-Mead",
-    #                         jac=True,
-    #                         options={"maxiter": 10000}
-    #                         )
-    theta = initial_theta.flatten()
     options = {'disp' : True, 'maxiter': 50}
-    #res = fmin(target_func, theta,
-    #           **options)
     res = minimize(target_func, initial_theta,
                             method="L-BFGS-B",
                             options=options

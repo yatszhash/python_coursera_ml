@@ -27,8 +27,9 @@ def display_data(X):
                    cmap=plt.get_cmap('gray'), interpolation='nearest',
                    vmin=-vmax, vmax=vmax)
         plt.xticks(())
-        plt.yticks()
-    plt.subplots_adjust(0.01, 0.05, 0.99, 0.93, 0.04, 0.)
+        plt.yticks(())
+    plt.subplots_adjust(left=0.01, bottom=0.05, right=0.99, top=0.93,
+                        wspace=0.04, hspace=0.)
     #plt.savefig("../../ex3_image")
     plt.show()
 
@@ -61,6 +62,15 @@ def predict_one_vs_all(X, all_theta):
     return predicted.reshape(len(predicted), 1)
 
 def predict(Theta1, Theta2, X):
+
+    h = nn_h(Theta1, Theta2, X)["a3"]
+    p = np.argmax(h, axis=1)
+    p = p.reshape(len(p), 1)
+
+    p += 1
+    return p
+
+def nn_h(Theta1, Theta2, X):
     a1 = np.c_[np.ones((X.shape[0], 1)), X]
 
     z2 = np.dot(a1, Theta1.T)
@@ -71,9 +81,9 @@ def predict(Theta1, Theta2, X):
 
     z3 = np.dot(a2, Theta2.T)
 
-    h = sigmoid_function(z3)
-    p = np.argmax(h, axis=1)
-    p = p.reshape(len(p), 1)
-
-    p += 1
-    return p
+    #for ex4, return all variables
+    return {"a1": a1,
+                "z2" : z2,
+                "a2" : a2,
+                "z3" : z3,
+                "a3": sigmoid_function(z3)}

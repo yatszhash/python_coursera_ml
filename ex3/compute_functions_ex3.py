@@ -3,16 +3,35 @@ import matplotlib.pyplot as plt
 
 from ex2.compute_functions_ex2 import sigmoid_function, cost_function_reg, gradient_descent, optimize_with_solver
 
+def display_sampling(X, sample_size=100):
+    # randomly select 100 data
+    np.random.seed(10)
+    random_indices = np.random.randint(0, X.shape[0], sample_size)
+    selected_X = X[random_indices, :]
 
-def display_data(X, example_width):
+    display_data(selected_X)
+
+def display_data(X):
     m, n = X.shape
-    example_hight = n / example_width
-    imgs = X.map(lambda x: x.reshpe(example_hight, example_width))
 
-    display_rows = np.floor(np.sqrt(m))
-    display_cols = np.ceil(m / display_rows)
-    fig = plt.subplot(m )
-    plt.gray()
+    n_col, n_row = 10, 10
+    plt.figure(figsize=(2. * n_col, 2.26 * n_row))
+    plt.title("plot images", size=16)
+    #fig = plt.subplot(m )
+    image_shape = (20, 20)
+
+    for i, comp in enumerate(X):
+        plt.subplot(n_row, n_col, i+1)
+        vmax = comp.max() - comp.min()
+        plt.imshow(comp.reshape(image_shape).T,
+                   cmap=plt.get_cmap('gray'), interpolation='nearest',
+                   vmin=-vmax, vmax=vmax)
+        plt.xticks(())
+        plt.yticks(())
+    plt.subplots_adjust(left=0.01, bottom=0.05, right=0.99, top=0.93,
+                        wspace=0.04, hspace=0.)
+    #plt.savefig("../../ex3_image")
+    plt.show()
 
 def opt_one_vs_all(X, Y, initial_theta, num_labels):
 
@@ -43,6 +62,15 @@ def predict_one_vs_all(X, all_theta):
     return predicted.reshape(len(predicted), 1)
 
 def predict(Theta1, Theta2, X):
+
+    h = nn_h(Theta1, Theta2, X)["a3"]
+    p = np.argmax(h, axis=1)
+    p = p.reshape(len(p), 1)
+
+    p += 1
+    return p
+
+def nn_h(Theta1, Theta2, X):
     a1 = np.c_[np.ones((X.shape[0], 1)), X]
 
     z2 = np.dot(a1, Theta1.T)
@@ -53,9 +81,9 @@ def predict(Theta1, Theta2, X):
 
     z3 = np.dot(a2, Theta2.T)
 
-    h = sigmoid_function(z3)
-    p = np.argmax(h, axis=1)
-    p = p.reshape(len(p), 1)
-
-    p += 1
-    return p
+    #for ex4, return all variables
+    return {"a1": a1,
+                "z2" : z2,
+                "a2" : a2,
+                "z3" : z3,
+                "a3": sigmoid_function(z3)}

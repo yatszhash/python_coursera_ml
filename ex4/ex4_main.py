@@ -3,7 +3,7 @@ import pandas as pd
 
 from ex3.compute_functions_ex3 import predict, display_sampling
 from ex4.compute_functions_ex4 import nn_costfunction, rand_initialize_weights, unroll_thetas, nn_optimize_with_solver, \
-    to_Thetas
+    to_Thetas, gradient_decent
 
 
 def main():
@@ -76,13 +76,17 @@ def main():
 
     print("\nTraining Neural Network....")
 
-    lambda_ = 0.01
+    lambda_ = 1
 
-    #TODO this doesn't work. Each element of Theta is almost same
+    #TODO more fast optimization
     nn_params = nn_optimize_with_solver(initial_nn_params, input_layer_size,
                                                                 hidden_layer_size, num_labels,
                                                                 X, y, lambda_)
-
+    #for gradient decent
+    #num_iter = 1000
+    #nn_params = gradient_decent(initial_nn_params, input_layer_size,
+    #                                                            hidden_layer_size, num_labels,
+    #                                                           X, y, lambda_, num_iter)
     nn_params = nn_params.reshape(1, nn_params.size)
 
     Theta1, Theta2 = to_Thetas(nn_params, input_layer_size,

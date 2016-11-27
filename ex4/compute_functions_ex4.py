@@ -80,14 +80,32 @@ def compute_numerical_gradient(J_function, theta):
 
     return num_grad
 
+#This gradient_decent doesn't work
+def gradient_decent(initial_nn_params, input_layer_size,
+                            hidden_layer_size, num_labels,
+                             X, y, lambda_, num_iter):
+    target_func = lambda nn_params: nn_costfunction(initial_nn_params,
+                                                    input_layer_size, hidden_layer_size,
+                                                    num_labels, X, y, lambda_)
+    size = initial_nn_params.size
+    nn_parmas = initial_nn_params.reshape(1, size)
+
+    for i in range(num_iter):
+        updated = target_func(nn_parmas)
+        cost = updated[0]
+        nn_parmas = updated[1].reshape(1, size)
+
+    return nn_parmas
+
 def nn_optimize_with_solver(initial_nn_params, input_layer_size,
                             hidden_layer_size, num_labels,
                              X, y, lambda_):
 
-    target_func = lambda nn_params: nn_costfunction(initial_nn_params,
+    size = initial_nn_params.size
+    target_func = lambda nn_params: nn_costfunction(nn_params.reshape(1, size),
                                                      input_layer_size,  hidden_layer_size,
-                                                     num_labels, X, y, lambda_)[0].flatten()
-    options = {"disp" : True, "maxiter" : 400}
+                                                     num_labels, X, y, lambda_)[0]
+    options = {"disp" : True, "maxiter" : 400, "maxfun": 600000}
     res = minimize(target_func, initial_nn_params,
                    method="L-BFGS-B", jac=False,  options=options)
 
